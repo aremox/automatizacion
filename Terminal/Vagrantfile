@@ -1,6 +1,7 @@
 # https://picodotdev.github.io/blog-bitix/2019/05/crear-de-forma-sencilla-y-rapida-maquinas-virtuales-de-virtualbox-con-vagrant/
 # https://www.itwonderlab.com/es/cluster-kubernetes-vagrant-ansible/
 # https://azure.microsoft.com/es-es/blog/automating-sap-deployments-in-microsoft-azure-using-terraform-and-ansible/
+# https://tech.serhatteker.com/post/2020-11/add-ssh-public-key-to-vagrant/
 
 IMAGE_NAME = "bento/almalinux-8"
 MASTERS_NUM = 1
