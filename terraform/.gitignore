@@ -1,0 +1,5 @@
+.terraform
+*.lock*
+*.tfstat*
+*.exe
+terraform-provider-azurerm_v3.10.0_x5.exe

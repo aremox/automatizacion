@@ -1,0 +1,101 @@
+#zone = element(var.availability-zones, (count.index))
+
+
+https://www.digitalocean.com/community/tutorials/how-to-use-ansible-with-terraform-for-configuration-management
+
+provisioner "remote-exec" {
+    inline = ["sudo apt update", "sudo apt install python3 -y", "echo Done!"]
+
+    connection {
+      host        = self.ipv4_address
+      type        = "ssh"
+      user        = "root"
+      private_key = file(var.pvt_key)
+    }
+  }
+
+  provisioner "local-exec" {
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u root -i '${self.ipv4_address},' --private-key ${var.pvt_key} -e 'pub_key=${var.pub_key}' apache-install.yml"
+  }
+
+
+LB
+
+resource "azurerm_lb_backend_address_pool" "beaddpool" {
+  loadbalancer_id = azurerm_lb.lb.id
+  name            = "BackEndAddressPool"
+}
+
+resource "azurerm_lb_backend_address_pool" "beaddpool" {
+  loadbalancer_id = azurerm_lb.lb.id
+  name            = "BackEndAddressPool"
+}
+
+resource "azurerm_lb_backend_address_pool_address" "beaddpooladd" {
+  name                    = "BackendAddressPoolAddress"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.beaddpool.id
+  virtual_network_id      = azurerm_virtual_network.vnet.id
+  ip_address              = "10.0.2.1"
+}
+
+resource "azurerm_lb_rule" "lbrule" {
+  loadbalancer_id                = azurerm_lb.lb.id
+  name                           = "LBRule"
+  protocol                       = "Tcp"
+  frontend_port                  = 22
+  backend_port                   = 22
+  frontend_ip_configuration_name = "PublicIPAddress"
+}
+
+resource "azurerm_lb_probe" "example" {
+  loadbalancer_id = azurerm_lb.lb.id
+  name            = "ssh-running-probe"
+  port            = 22
+}
+
+
+LB NAT
+
+
+resource "azurerm_lb_nat_rule" "lbrule" {
+  resource_group_name            = azurerm_resource_group.rg.name
+  loadbalancer_id                = azurerm_lb.lb.id
+  name                           = "LBRule"
+  protocol                       = "Tcp"
+  frontend_port                  = 22
+  backend_port                   = 22
+  frontend_ip_configuration_name = "PublicIPAddress"
+}
+
+resource "azurerm_network_interface_nat_rule_association" "lbbaknat" {
+  count                 = var.num_maquinas
+  network_interface_id  = azurerm_network_interface.nic[count.index].id
+  ip_configuration_name = "internal${count.index}"
+  nat_rule_id           = azurerm_lb_nat_rule.lbrule.id
+}
+
+
+resource "azurerm_subnet_network_security_group_association" "redfirewall" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.firewall.id
+}
+
+probe
+
+resource "azurerm_lb_rule" "lbrule" {
+  loadbalancer_id                = azurerm_lb.lb.id
+  name                           = "LBRule"
+  protocol                       = "Tcp"
+  frontend_port                  = 22
+  backend_port                   = 22
+  frontend_ip_configuration_name = "PublicIPAddress"
+}
+
+resource "azurerm_lb_probe" "lb" {
+  loadbalancer_id = azurerm_lb.lb.id
+  name            = "ssh-running-probe"
+  protocol        = "Tcp"
+  port            = 22
+  interval_in_seconds = 5
+  number_of_probes = 2
+}
