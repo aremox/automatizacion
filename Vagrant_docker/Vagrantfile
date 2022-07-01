@@ -3,6 +3,7 @@
 
 IMAGE_NAME = "bento/almalinux-8"
 K8S_NAME = "ditwl-k8s-01"
+TERMINAL_NUM = 1
 MASTERS_NUM = 1
 MASTERS_CPU = 2 
 MASTERS_MEM = 2048
@@ -11,8 +12,24 @@ NODES_CPU = 2
 NODES_MEM = 2048
 IP_BASE = "192.168.50."
 VAGRANT_DISABLE_VBOXSYMLINKCREATE=1
+
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
+    (1..TERMINAL_NUM).each do |i|
+        config.vm.define "terminal-#{i}" do |terminal|
+            terminal.vm.box = IMAGE_NAME
+            terminal.vm.network "public_network", ip: "192.168.1.129", hostname: true, bridge: "Realtek PCIe 2.5GbE Family Controller"
+            terminal.vm.network "private_network", ip: "#{IP_BASE}#{2}"
+            terminal.vm.hostname = "terminal"
+            terminal.vm.provider "virtualbox" do |v|
+                v.memory = MASTERS_MEM
+                v.cpus = MASTERS_CPU
+            end  
+            config.vm.provision "shell" do |s|
+                s.inline = "yum -y update; yum -y install python3"
+            end    
+        end
+    end
     (1..MASTERS_NUM).each do |i|      
         config.vm.define "k8s-m-#{i}" do |master|
             master.vm.box = IMAGE_NAME
@@ -22,7 +39,9 @@ Vagrant.configure("2") do |config|
                 v.memory = MASTERS_MEM
                 v.cpus = MASTERS_CPU
             end            
-            
+            config.vm.provision "shell" do |s|
+                s.inline = "yum -y update; yum -y install python3"
+            end 
         end
     end
     (1..NODES_NUM).each do |j|
@@ -34,7 +53,9 @@ Vagrant.configure("2") do |config|
                 v.memory = NODES_MEM
                 v.cpus = NODES_CPU
             end             
-            
+            config.vm.provision "shell" do |s|
+                s.inline = "yum -y update; yum -y install python3"
+            end 
         end
     end
 end

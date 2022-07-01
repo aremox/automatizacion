@@ -1,2 +1,7 @@
 # https://keepcoding.io/blog/que-son-los-roles-de-ansible-y-para-que-sirven/
 # https://runebook.dev/es/docs/ansible/user_guide/playbooks_reuse_roles
+# https://github.com/p0deje/vagrant-exec
+
+
+
+ansible -i host -m ping all
