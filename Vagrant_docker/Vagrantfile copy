@@ -1,5 +1,6 @@
 # https://picodotdev.github.io/blog-bitix/2019/05/crear-de-forma-sencilla-y-rapida-maquinas-virtuales-de-virtualbox-con-vagrant/
 # https://www.itwonderlab.com/es/cluster-kubernetes-vagrant-ansible/
+# https://github.com/itwonderlab/ansible-vbox-vagrant-kubernetes
 
 IMAGE_NAME = "bento/almalinux-8"
 K8S_NAME = "ditwl-k8s-01"

@@ -6,4 +6,5 @@
 
 
 
+
 ansible -i host -m ping all
