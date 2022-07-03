@@ -1,4 +1,22 @@
-192.168.50.2 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.ssh/id_rsa 
-192.168.50.11 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.ssh/id_rsa 
-192.168.50.12 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.ssh/id_rsa 
-192.168.50.13 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.ssh/id_rsa 
+[terminal]
+192.168.50.2
+
+[master]
+192.168.50.11
+
+[node]
+192.168.50.12
+192.168.50.13
+
+[k8s:children]
+master
+node
+
+[todas:children]
+k8s
+terminal
+
+[todas:vars]
+ansible_ssh_port=22
+ansible_ssh_user=vagrant
+ansible_ssh_private_key_file=~/.ssh/id_rsa
