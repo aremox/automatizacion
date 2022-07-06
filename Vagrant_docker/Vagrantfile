@@ -14,21 +14,32 @@ NODES_MEM = 2048
 IP_BASE = "192.168.50."
 VAGRANT_DISABLE_VBOXSYMLINKCREATE=1
 $ansible = <<-'SCRIPT'
-tee /etc/hosts<<EOF
+cat << EOF >> /etc/hosts
 192.168.50.1 terminal
 192.168.50.11 k8s-m-1
 192.168.50.12 k8s-n-1
 192.168.50.13 k8s-n-2
 EOF
+cat << EOF >> /etc/sysconfig/network-scripts/ifcfg-eth1
+GATEWAY=192.168.1.1
+DNS1=8.8.8.8
+DNS2=8.8.4.4
+EOF
 yum -y update; yum -y install python3; pip3 install --upgrade pip; runuser -l vagrant -c 'pip3 install --user ansible'
 mkdir /etc/ansible; chmod -R 777 /etc/ansible
 SCRIPT
+
 $update = <<-'SCRIPT'
-tee /etc/hosts<<EOF
+cat << EOF >> /etc/hosts
 192.168.50.1 terminal
 192.168.50.11 k8s-m-1
 192.168.50.12 k8s-n-1
 192.168.50.13 k8s-n-2
+EOF
+cat << EOF >> /etc/sysconfig/network-scripts/ifcfg-eth1
+GATEWAY=192.168.1.1
+DNS1=8.8.8.8
+DNS2=8.8.4.4
 EOF
 yum -y update; yum -y install python3
 SCRIPT
@@ -69,6 +80,7 @@ Vagrant.configure("2") do |config|
     (1..NODES_NUM).each do |j|
         config.vm.define "k8s-n-#{j}" do |node|
             node.vm.box = IMAGE_NAME
+            node.vm.network "public_network", ip: "192.168.1.#{130 + j}", hostname: true, bridge: "Realtek PCIe 2.5GbE Family Controller"
             node.vm.network "private_network", ip: "#{IP_BASE}#{j + 10 + MASTERS_NUM}"
             node.vm.hostname = "k8s-n-#{j}"
             node.vm.provider "virtualbox" do |v|

@@ -2,8 +2,8 @@ https://github.com/projectcalico/calico/issues/2720
 https://help.clouding.io/hc/es/articles/4402401958034-C%C3%B3mo-instalar-un-cluster-de-Kubernetes-en-CentOS-8
 https://blog.moon.cat/kubernetes-en-centos-8/
 kubectl get pods --all-namespaces -o wide
-kubectl log -n kube-system calico-node-hzcsh
-kubectl log -n kube-system kube-proxy-6f6q9
+kubectl logs -n kube-system calico-node-hzcsh
+kubectl logs -n kube-system kube-proxy-6f6q9
 sudo journalctl -f
 kubectl cluster-info
 
