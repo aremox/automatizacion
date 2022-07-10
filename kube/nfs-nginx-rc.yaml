@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nfs-web
+spec:
+  replicas: 2
+  selector:
+    role: nfs-web-rc
+  template:
+    metadata:
+      labels:
+        role: nfs-web-rc
+    spec:
+      containers:
+      - name: web
+        image: nginx
+        ports:
+          - name: web
+            containerPort: 80
+        volumeMounts:
+            - name: kube-nfs-pvc
+              mountPath: "/usr/share/nginx/html"
+      volumes:
+      - name: kube-nfs-pvc
+        persistentVolumeClaim:
+          claimName: kube-nfs-pvc

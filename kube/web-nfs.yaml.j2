@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{nombreapp}}
+  namespace: {{namespace}}
+  labels:
+    app: {{nombreapp}}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {{nombreapp}}
+  template:
+    metadata:
+      labels:
+        app: {{nombreapp}}
+    spec:
+      containers:
+      - name: {{nombreapp}}
+        image: nginx
+        ports:
+          - name: web
+            containerPort: 80
+        volumeMounts:
+            - name: {{ nombreapp }}-pvc
+              mountPath: "/usr/share/nginx/html"
+      volumes:
+      - name: {{ nombreapp }}-pvc
+        persistentVolumeClaim:
+          claimName: {{ nombreapp }}-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name:  {{nombreapp}}-service
+    namespace: {{namespace}}
+    labels:
+      app: {{nombreapp}}
+spec:
+    selector:
+      app: {{nombreapp}}
+    ports:
+    - name: http
+      protocol: TCP
+      port: 80 # puerto en el que escucha el servicio
+      targetPort: 80 # puerto en el que escucha el contenedor

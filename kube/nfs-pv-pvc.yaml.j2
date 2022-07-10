@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ nombreapp }}-pv
+  namespace: {{namespace}}
+spec:
+  storageClassName: storage-nfs
+  capacity:
+    storage: {{capacidad}}
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{nfs_server}}
+    path: {{nfs_path}}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ nombreapp }}-pvc
+  namespace: {{namespace}}
+spec:
+  storageClassName: storage-nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{capacidad}}

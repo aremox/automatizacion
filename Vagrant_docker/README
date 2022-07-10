@@ -4,9 +4,51 @@ https://blog.moon.cat/kubernetes-en-centos-8/
 https://www.jorgedelacruz.es/2017/12/26/kubernetes-volumenes-nfs/
 
 kubectl get pods --all-namespaces -o wide
-kubectl logs -n kube-system calico-node-hzcsh
+kubectl logs -n calico-system calico-node-hzcsh
 kubectl logs -n kube-system kube-proxy-6f6q9
 sudo journalctl -f
 kubectl cluster-info
 
 kubectl describe pod -n kube-system calico-node-7dfnq
+
+
+Crearemos el PV y el PVC de la siguiente manera, posteriormente verificaremos que se han creado:
+
+kubectl create -f nfs-pv-pvc.yaml
+ kubectl get pv
+ kubectl get pvc
+
+ kubectl create -f nfs-nginx-rc.yaml
+ kubectl get rc -o wide
+
+ kubectl describe pvc kube-nfs-pvc
+
+kubectl delete deployments nfs-web-routed-78ccc7c76c-4g25z --namespace=nfs-web-routed
+
+Borrar
+
+kubectl get ingress -o wide --namespace=caso2
+kubectl delete ingress webapp-ingress
+
+kubectl get ep -o wide --namespace=caso2
+kubectl delete ep nfs-web-service
+
+kubectl get svc -o wide --namespace=caso2
+kubectl delete svc nfs-web-service
+
+kubectl get pods -o wide --namespace=caso2
+kubectl delete pod nfs-web-klwfg nfs-web-routed-78ccc7c76c-bkdg4 nfs-web-routed-78ccc7c76c-mbkzw nfs-web-sr76c
+
+kubectl get deployments --namespace=caso2
+kubectl delete deployments nfs-web-routed
+
+kubectl get rc -o wide --namespace=caso2
+kubectl delete rc nfs-web
+
+kubectl get pvc -o wide --namespace=caso2
+kubectl delete pvc kube-nfs-pvc
+
+kubectl get pv -o wide --namespace=caso2
+kubectl delete pv kube-nfs-pv
+
+
