@@ -3,9 +3,13 @@ https://help.clouding.io/hc/es/articles/4402401958034-C%C3%B3mo-instalar-un-clus
 https://blog.moon.cat/kubernetes-en-centos-8/
 https://www.jorgedelacruz.es/2017/12/26/kubernetes-volumenes-nfs/
 
+https://medium.com/codex/how-to-deploy-wordpress-on-kubernetes-part-1-62cc5bd74410
+
 kubectl get pods --all-namespaces -o wide
 kubectl logs -n calico-system calico-node-hzcsh
 kubectl logs -n kube-system kube-proxy-6f6q9
+kubectl logs -l app=mysql -n caso2
+
 sudo journalctl -f
 kubectl cluster-info
 
@@ -21,7 +25,13 @@ kubectl create -f nfs-pv-pvc.yaml
  kubectl create -f nfs-nginx-rc.yaml
  kubectl get rc -o wide
 
- kubectl describe pvc kube-nfs-pvc
+kubectl describe pod -n caso2 mysql-b9b5dc974-kqnxd
+
+kubectl exec --stdin --tty wordpress-8696fccc4f-67b7r -n caso2 -- /bin/sh
+
+
+kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
+kubectl exec -i -t dnsutils -- nslookup kubernetes.default
 
 kubectl delete deployments nfs-web-routed-78ccc7c76c-4g25z --namespace=nfs-web-routed
 
@@ -51,4 +61,8 @@ kubectl delete pvc kube-nfs-pvc
 kubectl get pv -o wide --namespace=caso2
 kubectl delete pv kube-nfs-pv
 
+kubectl delete all --all -n caso2 ; kubectl delete pvc mysql-pvc web-nfs-pvc -n caso2; kubectl delete pv mysql-pv wordpress-pv -n caso2
 
+--------------
+kubectl get namespace caso2 -o json > tmp.json
+kubectl replace --raw "/api/v1/namespaces/caso2/finalize" -f tmp.json
