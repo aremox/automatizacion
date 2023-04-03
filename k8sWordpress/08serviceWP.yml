@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: demo-wordpress-service
+  namespace: demo-wordpress
+spec:
+  selector:
+    app: demo-wordpress
+  ports:
+  - protocol: TCP
+    port:  80

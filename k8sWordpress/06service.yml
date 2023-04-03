@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  demo-mysql-service
+  namespace: demo-wordpress
+spec:
+  selector:
+    app:  demo-mysql
+  ports:
+    - protocol: TCP
+      port: 3306
