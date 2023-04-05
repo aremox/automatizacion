@@ -53,7 +53,8 @@ dnf install -y kubelet kubeadm kubectl iproute-tc --disableexcludes=kubernetes
 
 systemctl enable kubelet
 systemctl start kubelet
-
+# Añadir datos de proxy
+#vi /etc/sysconfig/crio
 kubeadm config images pull
 
 kubeadm init --pod-network-cidr 10.71.0.0/16
