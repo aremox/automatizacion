@@ -54,6 +54,7 @@ dnf install -y kubelet kubeadm kubectl iproute-tc --disableexcludes=kubernetes
 systemctl enable kubelet
 systemctl start kubelet
 # Añadir datos de proxy
+#vi vi /etc/environment
 #vi /etc/sysconfig/crio
 kubeadm config images pull
 
